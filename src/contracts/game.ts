@@ -4,7 +4,7 @@ import {
     PlayerScore,
     GameDetails,
     GameActionInput
-} from './interfaces';
+} from '../interfaces/interfaces';
 
 export async function handle(state: GameState, action: GameActionInput): Promise<GameState> {
     switch (action.function) {

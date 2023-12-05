@@ -1,5 +1,3 @@
-// script to deploy contract source
-
 import fs from "fs";
 import * as esbuild from "esbuild";
 import { DeployPlugin, ArweaveSigner } from "warp-contracts-plugin-deploy";
@@ -8,59 +6,46 @@ import replace from "replace-in-file";
 import path from "path";
 
 (async () => {
-  // *store with name 'wallet.json' in root direstory of project if needed
-
   const walletPath = process.argv[2] ?? "wallet.json";
-
-  // intiating new warp instance for mainnet
   const warp = WarpFactory.forMainnet().use(new DeployPlugin());
-
-  // read private key file
   const key = JSON.parse(fs.readFileSync(walletPath).toString());
-
-  // get absolute path for project directory
   const __dirname = path.resolve();
 
-  await esbuild.build({
-    entryPoints: [
-      `src/contracts/upload.${
-        fs.existsSync("src/contracts/upload.ts") ? "ts" : "js"
-      }`,
-    ],
-    bundle: true,
-    outfile: "contracts-dist/contract.js",
-    format: "esm",
-    platform: "node",
-  });
+  const contractFiles = fs.readdirSync(path.join(__dirname, "src", "contracts"))
+    .filter(file => file.endsWith('.ts') || file.endsWith('.js'))
+    .map(file => `src/contracts/${file}`);
 
-  const files = [`./contracts-dist/contract.js`];
+  for (const file of contractFiles) {
+    const outFile = `contracts-dist/${path.basename(file, path.extname(file))}.js`;
 
-  replace.sync({
-    files: files,
-    from: [/async function handle/g, /export {\n {2}handle\n};\n/g],
-    to: ["export async function handle", ""],
-    countMatches: true,
-  });
+    await esbuild.build({
+      entryPoints: [file],
+      bundle: true,
+      outfile: outFile,
+      format: "esm",
+      platform: "node",
+    });
 
-  // read contract source logic from 'handle.js' and encode it
-  const contractSource = fs.readFileSync(
-    path.join(__dirname, "contracts-dist/contract.js"),
-    "utf-8"
-  );
+    replace.sync({
+      files: outFile,
+      from: [/async function handle/g, /export {\n {2}handle\n};\n/g],
+      to: ["export async function handle", ""],
+      countMatches: true,
+    });
 
-  // function create new contract source
-  const newSource = await warp.createSource(
-    { src: contractSource },
-    new ArweaveSigner(key)
-  );
-  const newSrcId = await warp.saveSource(newSource);
+    const contractSource = fs.readFileSync(outFile, "utf-8");
 
-  // write new function source's transaction id to new file
-  fs.writeFileSync(
-    path.join(__dirname, "src", "contracts", "contractData.json"),
-    JSON.stringify({ contractId: newSrcId })
-  );
+    const newSource = await warp.createSource(
+      { src: contractSource },
+      new ArweaveSigner(key)
+    );
+    const newSrcId = await warp.saveSource(newSource);
 
-  // log new function source's transaction id
-  console.log("New Source Contract Id: ", newSrcId);
+    const contractDataPath = path.join(__dirname, "src", "contracts", "contractData.json");
+    const contractData = fs.existsSync(contractDataPath) ? JSON.parse(fs.readFileSync(contractDataPath, "utf-8")) : {};
+    contractData[path.basename(file, path.extname(file))] = newSrcId;
+    fs.writeFileSync(contractDataPath, JSON.stringify(contractData));
+
+    console.log(`New Source Contract Id for ${file}: `, newSrcId);
+  }
 })();
