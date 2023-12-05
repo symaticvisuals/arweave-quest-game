@@ -1,34 +1,58 @@
 // src/contracts/assets.ts
-export async function handle(state, action) {
+export async function handle(state, action, caller) {
   switch (action.function) {
-    case "startGame":
-      return startGame(state, action.details);
-    case "endGame":
-      return endGame(state, action.details);
-    case "updateScore":
-      return updateScore(state, action.details);
+    case "createAsset":
+      if (!action.assetDetails) {
+        throw new Error("Asset details must be provided.");
+      }
+      return createAsset(state, action, caller);
+    case "transferShare":
+      if (!action.transferDetails) {
+        throw new Error("Transfer details must be provided.");
+      }
+      return transferShare(state, action, caller);
     default:
       throw new Error(`Unrecognized function: ${action.function}`);
   }
 }
-function startGame(state, gameDetails) {
-  if (!gameDetails) {
-    throw new Error("Game details must be provided.");
+function createAsset(state, action, caller) {
+  const assetDetails = action.assetDetails;
+  if (!assetDetails || !assetDetails.assetId) {
+    throw new Error("Asset details must be provided.");
   }
-  state.currentGame = gameDetails;
+  if (state.assets[assetDetails.assetId]) {
+    throw new Error("Asset already exists.");
+  }
+  state.assets[assetDetails.assetId] = {
+    ...assetDetails,
+    creator: caller
+  };
+  state.ownershipShares[assetDetails.assetId] = {
+    assetId: assetDetails.assetId,
+    owner: caller,
+    sharePercentage: 100
+  };
   return state;
 }
-function endGame(state, gameDetails) {
-  if (!gameDetails) {
-    throw new Error("Game details must be provided.");
+function transferShare(state, action, caller) {
+  const transferDetails = action.transferDetails;
+  if (!transferDetails || !transferDetails.assetId || !transferDetails.to || typeof transferDetails.sharePercentage !== "number") {
+    throw new Error("Transfer details must be provided.");
   }
-  state.currentGame = null;
-  return state;
-}
-function updateScore(state, playerScore) {
-  if (!playerScore || !playerScore.playerId) {
-    throw new Error("Player score details must be provided.");
+  const share = state.ownershipShares[transferDetails.assetId];
+  if (!share || share.owner !== caller) {
+    throw new Error("Caller does not own the asset share.");
   }
-  state.leaderboard[playerScore.playerId] = playerScore;
+  if (share.sharePercentage < transferDetails.sharePercentage) {
+    throw new Error("Caller does not have enough share to transfer.");
+  }
+  share.sharePercentage -= transferDetails.sharePercentage;
+  const newShare = state.ownershipShares[transferDetails.to] || {
+    assetId: transferDetails.assetId,
+    owner: transferDetails.to,
+    sharePercentage: 0
+  };
+  newShare.sharePercentage += transferDetails.sharePercentage;
+  state.ownershipShares[transferDetails.to] = newShare;
   return state;
 }
