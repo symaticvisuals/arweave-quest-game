@@ -13,6 +13,7 @@ const ImageUploadComponent: React.FC = () => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     // Do something with the files
+
     setFiles(
       acceptedFiles.map((file) =>
         Object.assign(file, {
@@ -26,6 +27,8 @@ const ImageUploadComponent: React.FC = () => {
     onDrop,
     multiple: true,
   });
+
+  console.log(files);
 
   // Preview component
   const thumbs = files.map((file) => (
@@ -55,6 +58,7 @@ const ImageUploadComponent: React.FC = () => {
         </div>
       ) : (
         <div className="">
+          {JSON.stringify(files)}
           <ScrollShadow
             hideScrollBar
             offset={100}

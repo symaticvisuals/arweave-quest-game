@@ -1,5 +1,5 @@
 import { createTransaction } from "arweavekit";
-import { Asset } from "./../types/post";
+import { Asset } from "../types/post";
 import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { interactWrite } from "smartweave";
