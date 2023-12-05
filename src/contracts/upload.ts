@@ -1,110 +1,85 @@
-import { createTransaction } from "arweavekit";
-import { Asset } from "./../types/post";
-
-function generateCustomTags(data: {
-  contentType: string;
-  creationDate: Date;
-  category: string;
-}) {
-  const tags = [];
-
-  // Example: Adding a content type tag
-  if (data.contentType) {
-    tags.push({ name: "Content-Type", value: data.contentType });
-  }
-
-  // Example: Tagging based on data creation date
-  if (data.creationDate) {
-    tags.push({
-      name: "Creation-Date",
-      value: data.creationDate.toISOString(),
-    });
-  }
-
-  // Example: Tagging based on data category
-  if (data.category) {
-    tags.push({ name: "Category", value: data.category });
-  }
-
-  // Add more custom logic based on other data attributes
-
-  return tags;
+// Define the structure of your contract's state
+interface State {
+  assets: Asset[];
+  collections: Collection[];
 }
 
-const toArrayBuffer = async (file: File): Promise<ArrayBuffer> =>
-  new Promise((resolve, reject) => {
-    const fr = new FileReader();
-    fr.readAsArrayBuffer(file);
-    fr.addEventListener("loadend", (e) => {
-      resolve(e.target?.result as ArrayBuffer);
-    });
-  });
-
-export async function postAtomicAssets(assets: Asset[]): Promise<string[]> {
-  const transactionIds: string[] = [];
-
-  for (const asset of assets) {
-    const data: ArrayBuffer = await toArrayBuffer(asset.file);
-
-    // ... rest of your existing logic to create inputTags ...
-    const inputTags = generateCustomTags({
-      contentType: "image/png",
-      creationDate: new Date(),
-      category: "artwork",
-      // other data attributes...
-    });
-    const txn = await createTransaction({
-      type: "data",
-      environment: "mainnet",
-      data: data,
-      options: {
-        tags: inputTags,
-        signAndPost: true,
-      },
-    });
-
-    console.log("Transaction uploaded successfully", txn.transaction.id);
-    transactionIds.push(txn.transaction.id);
-  }
-
-  return transactionIds;
+interface Asset {
+  id: string;
+  shares: Record<string, number>;
+  owner: string;
 }
 
-export async function createCollectionManifest(
-  assetsTxIds: string[],
-  collectionMetadata: any
-) {
-  const collectionManifest = {
-    type: "Collection",
-    items: assetsTxIds,
-    metadata: {
-      title: collectionMetadata.title,
-      description: collectionMetadata.description,
-      topics: collectionMetadata.topics,
-      // Add other necessary metadata
-    },
-  };
+interface Collection {
+  id: string;
+  assets: string[];
+  metadata: CollectionMetadata;
+  owner: string;
+}
 
-  const collectionTags = [
-    { name: "Content-Type", value: "application/json" },
-    { name: "Collection-Type", value: collectionMetadata.type },
-    // Include other tags based on the Collection Protocol
-  ];
+interface CollectionMetadata {
+  title: string;
+  description: string;
+  topics: string[];
+}
 
-  // Create and post the transaction for the collection manifest
-  const collectionTxn = await createTransaction({
-    type: "data",
-    environment: "mainnet",
-    data: JSON.stringify(collectionManifest),
-    options: {
-      tags: collectionTags,
-      signAndPost: true,
-    },
-  });
+interface Action {
+  input: Input;
+  caller: string;
+}
 
-  console.log(
-    "Collection manifest uploaded successfully",
-    collectionTxn.transaction.id
-  );
-  return collectionTxn.transaction.id;
+interface Input {
+  function: string;
+  assetId?: string;
+  initialShares?: Record<string, number>;
+  collectionId?: string;
+  assets?: string[];
+  metadata?: CollectionMetadata;
+}
+
+// Initialize the contract's state
+const initialState: State = {
+  assets: [],
+  collections: [],
+};
+
+// The 'handle' function is the main entry point of the SmartWeave contract
+export async function handle(
+  state: State,
+  action: Action
+): Promise<{ state: State }> {
+  const input = action.input;
+  const caller = action.caller;
+
+  switch (input.function) {
+    case "registerAsset":
+      if (!input.assetId || !input.initialShares) {
+        throw new Error("Invalid input for registering an asset");
+      }
+      const newAsset: Asset = {
+        id: input.assetId,
+        shares: input.initialShares,
+        owner: caller,
+      };
+      state.assets.push(newAsset);
+      break;
+
+    case "registerCollection":
+      if (!input.collectionId || !input.assets || !input.metadata) {
+        throw new Error("Invalid input for registering a collection");
+      }
+      const newCollection: Collection = {
+        id: input.collectionId,
+        assets: input.assets,
+        metadata: input.metadata,
+        owner: caller,
+      };
+      state.collections.push(newCollection);
+      break;
+
+    default:
+      throw new Error("Invalid function");
+  }
+
+  return { state };
 }

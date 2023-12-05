@@ -6,9 +6,6 @@ function License() {
   const [selectedLicense, setSelectedLicense] = useState<string>("");
   const [derivationEnabled, setDerivationEnabled] = useState<boolean>(false);
 
-  const onChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-    setSelectedLicense(e.target.value);
-  };
   return (
     <div>
       <div className="flex gap-3 items-center">
