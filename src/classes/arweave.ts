@@ -1,5 +1,5 @@
 import { createTransaction } from "arweavekit";
-import { Asset } from "../types/post";
+import { Asset, ShareData } from "../types/post"; // Ensure this import is correct
 import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { interactWrite } from "smartweave";
@@ -13,7 +13,8 @@ interface CollectionMetadata {
 
 class ArweaveContract {
   private arweave: Arweave;
-  private wallet: JWKInterface; // Your Arweave wallet key
+  private wallet: JWKInterface;
+  private walletAddress: string | undefined;
 
   constructor(wallet: JWKInterface) {
     this.arweave = Arweave.init({
@@ -92,8 +93,15 @@ class ArweaveContract {
       // Register asset in the SmartWeave contract
       await interactWrite(this.arweave, this.wallet, contractId, {
         function: "registerAsset",
-        assetId: txn.transaction.id,
-        initialShares: asset.shareData.initialShares,
+        asset: {
+          file: asset.file, // Assuming asset.file is of type File
+          title: asset.title,
+          description: asset.description,
+          license: asset.license,
+          tags: asset.tags,
+          creatorId: this.walletAddress, // Wallet address as creatorId
+          shareData: asset.shareData,
+        },
       });
     }
 
@@ -140,8 +148,13 @@ class ArweaveContract {
     // Register collection in the SmartWeave contract
     await interactWrite(this.arweave, this.wallet, contractId, {
       function: "registerCollection",
-      collectionId: collectionTxn.transaction.id,
-      assets: assetsTxIds,
+      collection: {
+        asset: assetsTxIds.map((id) => ({ id })), // Assuming each asset is referenced by its transaction ID
+        game: collectionMetadata.title, // Modify as needed
+        description: collectionMetadata.description,
+        topics: collectionMetadata.topics,
+        owner: this.walletAddress, // Wallet address as owner
+      },
     });
 
     return collectionTxn.transaction.id;

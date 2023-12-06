@@ -32,31 +32,33 @@ function RolesSelector() {
               aspernatur!
             </small>
           </CardHeader>
-          <CardBody className="overflow-visible py-2">
+          <CardBody className="overflow-visible py-2 object-cover">
             <Image
               alt="Card background"
               className="object-cover rounded-xl w-full h-auto"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png"
+              width={"100%"}
+              src="/assets/organizer.png"
             />
           </CardBody>
         </Card>
         <Card
           className="py-4 h-[50vh] w-full cursor-pointer  active:outline active:outline-primary-500 focus:outline focus:outline-primary-500"
-          onFocus={() => onRoleChange("p")}
+          onFocus={() => onRoleChange("o")}
         >
           <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <h4 className="font-bold text-2xl">Player</h4>
+            <h4 className="font-bold text-2xl">Participant</h4>
             <small className="text-default-500">
               Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et iure
               illum accusantium nostrum maxime alias ipsam nihil officiis libero
               aspernatur!
             </small>
           </CardHeader>
-          <CardBody className="overflow-visible py-2">
+          <CardBody className="overflow-visible py-2 object-cover">
             <Image
               alt="Card background"
               className="object-cover rounded-xl w-full h-auto"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png"
+              width={"100%"}
+              src="/assets/participant.png"
             />
           </CardBody>
         </Card>

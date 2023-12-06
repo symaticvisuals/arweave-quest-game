@@ -1,83 +1,101 @@
 "use client";
-import { Button, Image, ScrollShadow } from "@nextui-org/react";
-import React, { useCallback, useState, useEffect } from "react";
+import { useImageUploader } from "@/hooks/use-image-uploader";
+import { Button, Image, Progress } from "@nextui-org/react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import CollectionAttributes from "./collection-attributes";
 
-interface FileWithPreview extends File {
-  preview: string;
+interface ImagePreviewProps {
+  src: string;
+  alt: string;
+}
+
+const ImagePreview: React.FC<ImagePreviewProps> = React.memo(({ src, alt }) => (
+  <div>
+    <Image src={src} alt={alt} width={500} height={500} />
+  </div>
+));
+
+ImagePreview.displayName = "ImagePreview";
+
+export interface FileWithPreview extends File {
+  preview?: string;
 }
 
 const ImageUploadComponent: React.FC = () => {
+  const { connected, connect, uploadImages, txIds, uploadStatus } =
+    useImageUploader();
   const [files, setFiles] = useState<FileWithPreview[]>([]);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    // Do something with the files
-
-    setFiles(
-      acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      )
-    );
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles: FileWithPreview[]) => {
+      if (!connected) {
+        connect(); // Trigger wallet connection if not connected
+      } else {
+        uploadImages(acceptedFiles);
+        setFiles(
+          acceptedFiles.map((file) =>
+            Object.assign(file, {
+              preview: URL.createObjectURL(file),
+            })
+          )
+        );
+      }
+      return () => {
+        acceptedFiles.forEach(
+          (file) => file.preview && URL.revokeObjectURL(file.preview)
+        );
+      };
+    },
+    [uploadImages, connected, connect]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({
+    //ts-ignore
     onDrop,
     multiple: true,
   });
-
-  console.log(files);
-
-  // Preview component
-  const thumbs = files.map((file) => (
-    <div key={file.name}>
-      <div className="">
-        <Image isZoomed width={240} alt={file.name} src={file.preview} />
-      </div>
-    </div>
-  ));
-
-  // Cleanup previews
-  useEffect(() => {
-    return () => {
-      files.forEach((file) => URL.revokeObjectURL(file.preview));
-    };
-  }, [files]);
-
   return (
     <div className="p-6 cursor-pointer">
-      {files.length === 0 ? (
+      {files.length === 0 && (
         <div
           {...getRootProps()}
-          className="h-[50vh] w-full flex justify-center items-center  dark:bg-zinc-900 rounded-lg light:bg-zinc-200"
+          className="h-[50vh] flex justify-center items-center bg-zinc-900 rounded-lg"
         >
           <input {...getInputProps()} />
-          <p>Drag {"'n'"} drop some images here, or click to select images</p>
+          <p>Drag {"n"} drop some images here, or click to select images</p>
         </div>
-      ) : (
-        <div className="">
-          {JSON.stringify(files)}
-          <ScrollShadow
-            hideScrollBar
-            offset={100}
-            orientation="horizontal"
-            className="max-w-[400px] max-h-[300px]"
-          >
-            <aside className="flex w-full">{thumbs}</aside>
-          </ScrollShadow>
-          <Button
-            color="danger"
-            className="mt-4"
-            onClick={() => {
-              setFiles([]);
-            }}
-          >
-            Cancel
-          </Button>
-          <CollectionAttributes />
-        </div>
+      )}
+
+      {uploadStatus === "Uploading..." && (
+        <Progress
+          size="sm"
+          isIndeterminate
+          aria-label="Loading..."
+          className="max-w-md"
+        />
+      )}
+
+      <div className="grid grid-cols-3">
+        {txIds.map((txId, i) => (
+          <ImagePreview
+            key={txId}
+            src={files[i].preview || files[i].name}
+            alt={`Image ${txId}`}
+          />
+        ))}
+      </div>
+
+      {files.length > 0 && (
+        <Button
+          color="danger"
+          onClick={() => {
+            setFiles([]);
+            txIds.splice(0, txIds.length);
+          }}
+          className="mt-4"
+        >
+          Cancel
+        </Button>
       )}
     </div>
   );

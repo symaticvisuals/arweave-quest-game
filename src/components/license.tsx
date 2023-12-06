@@ -3,13 +3,22 @@ import { Input, Select, SelectItem, Slider, Switch } from "@nextui-org/react";
 import React, { useState } from "react";
 
 function License() {
-  const [selectedLicense, setSelectedLicense] = useState<string>("");
   const [derivationEnabled, setDerivationEnabled] = useState<boolean>(false);
+  const [derivationPercentage, setDerivationPercentage] = useState<number>(10);
+  const [commercialUse, setCommercialUse] = useState<boolean>(false);
+
+  const onChangeDerivationPercentage = (e: any) => {
+    setDerivationPercentage(Number(e));
+  };
 
   return (
     <div>
       <div className="flex gap-3 items-center">
-        <Switch defaultSelected className="mt-4">
+        <Switch
+          defaultSelected
+          className="mt-4"
+          onValueChange={setCommercialUse}
+        >
           Commercial Use
         </Switch>
         <Switch
@@ -32,6 +41,7 @@ function License() {
             minValue={0}
             defaultValue={10}
             className="w-full"
+            onChange={onChangeDerivationPercentage}
           />
         </div>
       )}

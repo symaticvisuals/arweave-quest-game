@@ -13,7 +13,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <NextThemesProvider attribute="class">
         <ArweaveWalletKit
           config={{
-            permissions: ["ACCESS_ADDRESS", "SIGN_TRANSACTION", "DISPATCH"],
+            permissions: [
+              "ACCESS_ADDRESS",
+              "SIGN_TRANSACTION",
+              "DISPATCH",
+              "SIGNATURE",
+              "ACCESS_ADDRESS",
+              "ACCESS_PUBLIC_KEY",
+              "ENCRYPT",
+              "DECRYPT",
+            ],
             ensurePermissions: true,
             appInfo: {
               name: "StarterKit",
