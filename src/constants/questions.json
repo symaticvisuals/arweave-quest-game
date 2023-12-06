@@ -1,0 +1,62 @@
+[
+  {
+    "question": "What is Blockchain?",
+    "answer": "Ledger"
+  },
+  {
+    "question": "What does Arweave mainly offer?",
+    "answer": "Storage"
+  },
+  {
+    "question": "Which programming language is commonly used for Ethereum smart contracts?",
+    "answer": "Solidity"
+  },
+  {
+    "question": "What is the primary purpose of a cryptographic hash function in blockchain technology?",
+    "answer": "Integrity"
+  },
+  {
+    "question": "What does 'DAO' stand for in blockchain terminology?",
+    "answer": "Organization"
+  },
+  {
+    "question": "How does Arweave differ from traditional blockchain storage solutions?",
+    "answer": "Access"
+  },
+  {
+    "question": "What is 'Gas' in the context of Ethereum?",
+    "answer": "Fee"
+  },
+  {
+    "question": "Which consensus algorithm does Bitcoin use?",
+    "answer": "Work"
+  },
+  {
+    "question": "What is an NFT?",
+    "answer": "Token"
+  },
+  {
+    "question": "In Arweave, what is the term for the fee paid by users to store data?",
+    "answer": "Endowment"
+  },
+  {
+    "question": "What is the key feature of the blockweave structure used by Arweave?",
+    "answer": "Link"
+  },
+  {
+    "question": "What is a 'Smart Contract'?",
+    "answer": "Contract"
+  },
+  {
+    "question": "Which technology is a fundamental component of cryptocurrencies?",
+    "answer": "Blockchain"
+  },
+  {
+    "question": "What is 'sharding' in blockchain?",
+    "answer": "Scalability"
+  },
+  {
+    "question": "In the context of Arweave, what is 'permaweb'?",
+    "answer": "Hosting"
+  }
+]

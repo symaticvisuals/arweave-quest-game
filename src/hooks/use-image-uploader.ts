@@ -12,6 +12,7 @@ const arweave = Arweave.init({
 export const useImageUploader = () => {
   const { connected, connect } = useConnection();
   const api = useApi();
+
   const [txIds, setTxIds] = useState<string[]>([]);
   const [uploadStatus, setUploadStatus] = useState<string>("");
 

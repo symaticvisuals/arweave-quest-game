@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans as FontSans } from "next/font/google";
+import { Vina_Sans as FontSerif } from "next/font/google";
 import "./globals.css";
 
 import { cn } from "@nextui-org/react";
@@ -12,7 +13,12 @@ const fontSans = FontSans({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-export const metadata: Metadata = {
+export const fontSerif = FontSerif({
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const metadata: Metadata = {
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,

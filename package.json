@@ -2,12 +2,13 @@
   "name": "quest-app-ar",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy-contracts": "node ./scripts/deploy.mjs"
+    "deploy-contracts": "node ./scripts/deploy.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -28,14 +29,9 @@
     "jszip": "^3.10.1",
     "next": "14.0.3",
     "next-themes": "^0.2.1",
-<<<<<<< HEAD
     "qrcode.react": "^3.1.0",
     "react": "^18",
     "react-dom": "^18",
-=======
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
->>>>>>> 22554f1607e44aeaafdd2be4d1af475a3c98ae3f
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.48.2",
     "react-icons": "^4.12.0",

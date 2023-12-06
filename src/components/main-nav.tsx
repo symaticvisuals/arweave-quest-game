@@ -5,9 +5,7 @@ import { usePathname } from "next/navigation";
 import { NavItem } from "@/types/nav";
 import { siteConfig } from "@/config/site";
 import { cn } from "@nextui-org/react";
-
-
-
+import Image from "next/image";
 
 interface MainNavProps {
   items?: NavItem[];
@@ -17,20 +15,16 @@ interface MainNavProps {
 export function MainNav({ items, children }: MainNavProps) {
   const pathname = usePathname();
 
-
-
-
   return (
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="hidden md:flex items-center space-x-2">
-      
         <span className="hidden sm:inline-block font-bold">
-          {siteConfig.name}
+          <Image src="/assets/Group.png" width={160} height={50} alt="Brand" />
         </span>
       </Link>
       {items?.length ? (
         <nav className="hidden md:flex gap-6">
-          {items?.map(
+          {/* {items?.map(
             (item, index) =>
               item.href && (
                 <Link
@@ -47,10 +41,9 @@ export function MainNav({ items, children }: MainNavProps) {
                   {item.title}
                 </Link>
               )
-          )}
+          )} */}
         </nav>
       ) : null}
-      
     </div>
   );
 }

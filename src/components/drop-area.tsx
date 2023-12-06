@@ -1,6 +1,9 @@
 "use client";
+import { fontSerif } from "@/app/layout";
 import { useImageUploader } from "@/hooks/use-image-uploader";
-import { Button, Image, Progress } from "@nextui-org/react";
+import { registerAsset } from "@/utils/asset-ownership";
+import { Button, Image, Progress, cn } from "@nextui-org/react";
+import { useApi } from "arweave-wallet-kit";
 import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -54,6 +57,8 @@ const ImageUploadComponent: React.FC = () => {
     onDrop,
     multiple: true,
   });
+
+  const api = useApi();
   return (
     <div className="p-6 cursor-pointer">
       {files.length === 0 && (
@@ -76,14 +81,32 @@ const ImageUploadComponent: React.FC = () => {
       )}
 
       <div className="grid grid-cols-3">
-        {txIds.map((txId, i) => (
+        {files.map((txId, i) => (
           <ImagePreview
-            key={txId}
+            key={i}
             src={files[i].preview || files[i].name}
             alt={`Image ${txId}`}
           />
         ))}
       </div>
+
+      <Button
+        color="secondary"
+        onClick={async () => {
+          const data = await fetch(`https://arweave.net/${txIds[3]}`);
+          await data.json().then((res) => console.log(res));
+
+          const callerId = await api?.getActiveAddress();
+          console.log(txIds);
+          callerId &&
+            registerAsset(txIds[0], callerId).then(
+              (res) => console.log(res),
+              (err) => console.log(err)
+            );
+        }}
+      >
+        Add to Contract
+      </Button>
 
       {files.length > 0 && (
         <Button
