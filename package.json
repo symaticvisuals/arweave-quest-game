@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
+    "@nextui-org/button": "^2.0.26",
     "@nextui-org/react": "^2.2.9",
     "@permaweb/stampjs": "^0.6.2",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "arweave": "^1.14.4",
     "arweave-wallet-kit": "^1.0.3",
     "arweavekit": "^1.5.1",

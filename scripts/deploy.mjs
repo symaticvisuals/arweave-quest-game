@@ -11,9 +11,14 @@ import path from "path";
   const key = JSON.parse(fs.readFileSync(walletPath).toString());
   const __dirname = path.resolve();
 
-  const contractFiles = fs.readdirSync(path.join(__dirname, "src", "contracts"))
-    .filter(file => file.endsWith('.ts') || file.endsWith('.js'))
-    .map(file => `src/contracts/${file}`);
+  // Specify the contract files to deploy
+  const contractFiles = [
+    'assets.ts',
+    'game.ts',
+    'ownership.ts',
+    'state.ts',
+    'upload.ts'
+  ].map(file => `src/contracts/${file}`);
 
   for (const file of contractFiles) {
     const outFile = `contracts-dist/${path.basename(file, path.extname(file))}.js`;
