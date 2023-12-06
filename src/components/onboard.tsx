@@ -2,14 +2,12 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ConnectButton } from "arweave-wallet-kit";
-import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 interface OnboardProps {
   onWalletConnected: () => void;
 }
 
 const Onboard: React.FC<OnboardProps> = ({ onWalletConnected }) => {
-  const { isAboveSm } = useBreakpoint("sm");
   const [isConnected, setIsConnected] = useState(false);
 
   const handleConnect = () => {
@@ -38,8 +36,8 @@ const Onboard: React.FC<OnboardProps> = ({ onWalletConnected }) => {
         <Image src="/Logo.svg" alt="Questify Logo" width={200} height={100} />
       </div>
       <ConnectButton
-        showBalance={isAboveSm}
-        showProfilePicture={isAboveSm}
+        showBalance={true}
+        showProfilePicture={true}
         onClick={handleConnect}
       />
       <div className="absolute bottom-0 w-full text-center">
