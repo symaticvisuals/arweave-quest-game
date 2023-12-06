@@ -68,6 +68,9 @@ const updateOwnership = async (
     wallet: "use-wallet",
     options: {
       function: "updateOwnership",
+      type: "updateOwnership",
+      assetId,
+      newOwners,
       input: {
         type: "updateOwnership",
         assetId,
@@ -90,6 +93,9 @@ const addContestWinner = async (
     wallet: "use-wallet",
     options: {
       function: "addContestWinner",
+      type: "addContestWinner",
+      assetId,
+      winner,
       input: {
         type: "addContestWinner",
         assetId,
@@ -111,6 +117,9 @@ const distributeReward = async (
     wallet: "use-wallet",
     options: {
       function: "distributeReward",
+      type: "distributeReward",
+      assetId,
+
       input: {
         type: "distributeReward",
         assetId,

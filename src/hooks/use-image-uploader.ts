@@ -56,5 +56,7 @@ export const useImageUploader = () => {
     [connected, api]
   );
 
+  console.log(txIds);
+
   return { connected, connect, uploadImages, txIds, uploadStatus };
 };

@@ -89,37 +89,37 @@ const ImageUploadComponent: React.FC = () => {
           />
         ))}
       </div>
+      <div className="flex gap-4 items-center mt-4">
+        {files.length > 0 && (
+          <Button
+            color="secondary"
+            onClick={async () => {
+              const callerId = await api?.getActiveAddress();
+              console.log(txIds);
+              callerId &&
+                registerAsset(txIds[0], callerId).then(
+                  (res) => console.log(res),
+                  (err) => console.log(err)
+                );
+            }}
+          >
+            Add to Contract
+          </Button>
+        )}
 
-      <Button
-        color="secondary"
-        onClick={async () => {
-          const data = await fetch(`https://arweave.net/${txIds[3]}`);
-          await data.json().then((res) => console.log(res));
-
-          const callerId = await api?.getActiveAddress();
-          console.log(txIds);
-          callerId &&
-            registerAsset(txIds[0], callerId).then(
-              (res) => console.log(res),
-              (err) => console.log(err)
-            );
-        }}
-      >
-        Add to Contract
-      </Button>
-
-      {files.length > 0 && (
-        <Button
-          color="danger"
-          onClick={() => {
-            setFiles([]);
-            txIds.splice(0, txIds.length);
-          }}
-          className="mt-4"
-        >
-          Cancel
-        </Button>
-      )}
+        {files.length > 0 && (
+          <Button
+            color="danger"
+            onClick={() => {
+              setFiles([]);
+              txIds.splice(0, txIds.length);
+            }}
+            className=""
+          >
+            Cancel
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

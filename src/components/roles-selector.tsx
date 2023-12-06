@@ -43,7 +43,7 @@ function RolesSelector() {
         </Card>
         <Card
           className="py-4 h-[50vh] w-full cursor-pointer  active:outline active:outline-primary-500 focus:outline focus:outline-primary-500"
-          onFocus={() => onRoleChange("o")}
+          onFocus={() => onRoleChange("p")}
         >
           <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
             <h4 className="font-bold text-2xl">Participant</h4>

@@ -1,8 +1,8 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import Onboard from '@/app/player/game/onboard';
-import Task from '@/app/player/game/task';
-import { useRouter } from 'next/router';
+"use client";
+import React, { useState, useEffect } from "react";
+import Onboard from "@/components/onboard";
+import Task from "@/components/task";
+import { useRouter } from "next/navigation";
 
 const Player = () => {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
@@ -10,10 +10,19 @@ const Player = () => {
 
   const handleWalletConnection = () => {
     setIsWalletConnected(true);
-    router.push('/task');
   };
 
-  return isWalletConnected ? <Task /> : <Onboard onWalletConnected={handleWalletConnection} />;
+  useEffect(() => {
+    if (isWalletConnected) {
+      setIsWalletConnected(true);
+    }
+  }, [isWalletConnected, router]);
+
+  return isWalletConnected ? (
+    <Task />
+  ) : (
+    <Onboard onWalletConnected={handleWalletConnection} />
+  );
 };
 
 export default Player;
