@@ -1,16 +1,22 @@
 "use client";
-import { fontSerif } from "@/app/layout";
+
 import { useImageUploader } from "@/hooks/use-image-uploader";
 import { registerAsset } from "@/utils/asset-ownership";
 import { Button, Image, Progress, cn } from "@nextui-org/react";
 import { useApi } from "arweave-wallet-kit";
 import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import { Vina_Sans as FontSerif } from "next/font/google";
 
 interface ImagePreviewProps {
   src: string;
   alt: string;
 }
+
+const fontSerif = FontSerif({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
 const ImagePreview: React.FC<ImagePreviewProps> = React.memo(({ src, alt }) => (
   <div>

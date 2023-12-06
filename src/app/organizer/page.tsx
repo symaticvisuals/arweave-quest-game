@@ -2,9 +2,15 @@
 
 import ImageUploadComponent from "@/components/drop-area";
 import CollectionContext from "@/contexts/collection-context";
+import { Vina_Sans as FontSerif } from "next/font/google";
 import React from "react";
-import { fontSerif } from "../layout";
+
 import { cn } from "@nextui-org/react";
+
+const fontSerif = FontSerif({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
 function OrganizerPage() {
   const [collection, setCollection] = React.useState({

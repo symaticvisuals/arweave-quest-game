@@ -13,11 +13,6 @@ const fontSans = FontSans({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-export const fontSerif = FontSerif({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
 const metadata: Metadata = {
   title: {
     default: siteConfig.name,
